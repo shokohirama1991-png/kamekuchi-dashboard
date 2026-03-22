@@ -46,10 +46,14 @@
     .search-box { flex:1; min-width:200px; padding:8px 14px; border:1px solid #cbd5e1;
                    border-radius:8px; font-size:.9rem; outline:none; }
     .search-box:focus { border-color:#6366f1; box-shadow:0 0 0 3px #6366f120; }
-    .quick-btn { padding:6px 14px; border-radius:20px; border:1px solid #cbd5e1;
-                  background:#fff; font-size:.82rem; cursor:pointer; white-space:nowrap; }
-    .quick-btn.active { background:#1e293b; color:#fff; border-color:#1e293b; }
     .row-count { font-size:.82rem; color:#64748b; white-space:nowrap; margin-left:auto; }
+    /* ページナビ */
+    .page-nav { max-width:1280px; margin:0 auto 18px; display:flex; gap:10px; }
+    .nav-btn { padding:8px 20px; border-radius:8px; font-size:.88rem; font-weight:600;
+                text-decoration:none; border:2px solid #e2e8f0; background:#fff; color:#1e293b;
+                transition:all .15s; }
+    .nav-btn:hover { border-color:#6366f1; color:#6366f1; }
+    .nav-btn.active { background:#1e293b; color:#fff; border-color:#1e293b; }
     /* テーブル */
     .table-wrap { max-width:1280px; margin:0 auto; background:#fff;
                    border-radius:12px; box-shadow:0 1px 5px rgba(0,0,0,.07); overflow:hidden; }
@@ -76,7 +80,7 @@
   <div class="header">
     <div>
       <h1>🍪 かめくち 焼き菓子 在庫管理</h1>
-      <p>2026/03/22（日） &nbsp;|&nbsp; 最終更新: 2026/03/22 13:00 &nbsp;|&nbsp;
+      <p>2026/03/22（日） &nbsp;|&nbsp; 最終更新: 2026/03/22 13:03 &nbsp;|&nbsp;
          2026年1月〜の曜日別平均（イベント日4件除外）＋天気補正</p>
     </div>
   </div>
@@ -161,13 +165,15 @@
     </div>
   </div>
 
-  <!-- 絞り込み -->
+  <!-- ページナビ -->
+  <div class="page-nav">
+    <a href="index.html" class="nav-btn ">📦 全商品</a>
+    <a href="sweets.html" class="nav-btn active">🍪 焼き菓子</a>
+  </div>
+
+  <!-- 検索 -->
   <div class="controls">
     <input class="search-box" type="text" id="search" placeholder="商品名で検索..." oninput="applyFilter()">
-    <button class="quick-btn active" id="btn-all" onclick="quickFilter('all')">すべて</button>
-    <button class="quick-btn" id="btn-焼き菓子" onclick="quickFilter('焼き菓子',['マドレーヌ','ドーナツ','クッキー','パウンド','フロランタン','スコーン','ガレット','ショコラ','タルト','焼き','チョコ'])">🍪 焼き菓子</button>
-    <button class="quick-btn" id="btn-お酒" onclick="quickFilter('お酒',['敷嶋','鳳凰','みりん','酒','純米','吟醸','gorilla'])">🍶 お酒・みりん</button>
-    <button class="quick-btn" id="btn-食品" onclick="quickFilter('食品',['味噌','醤油','塩','みかん','いわし','ポーク','つみれ','玉ねぎ','乾燥','米'])">🥫 食品</button>
     <span class="row-count" id="row-count"></span>
   </div>
 
@@ -200,17 +206,6 @@
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.9</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.2</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.8</span></td>
           <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
         </tr>
-        <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="medium" style="background:#eff6ff;">
-          <td class="td-name">🔵 麹フィナンシェ　5個入り</td>
-          <td class="td-num">8</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">8</td>
-          <td class="td-num" title="金:1.2 / 土:2.8 / 日:2.5 / 火:0.6 / 水:0.6 / 木:1.0">1.5/日</td>
-          <td class="td-num" style="font-weight:700;color:#2563eb;">7日</td>
-          <td class="td-center"><span class="badge" style="background:#2563eb;color:#fff;">03/31（火）</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.6</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.9</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
-        </tr>
         <tr class="data-row" data-name="麹マドレーヌ　５個入り" data-risk="medium" style="background:#eff6ff;">
           <td class="td-name">🔵 麹マドレーヌ　５個入り</td>
           <td class="td-num">6</td>
@@ -220,6 +215,17 @@
           <td class="td-num" style="font-weight:700;color:#2563eb;">7日</td>
           <td class="td-center"><span class="badge" style="background:#2563eb;color:#fff;">03/31（火）</span></td>
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.5</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.8</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.4</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
+        </tr>
+        <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="medium" style="background:#eff6ff;">
+          <td class="td-name">🔵 麹フィナンシェ　5個入り</td>
+          <td class="td-num">8</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">8</td>
+          <td class="td-num" title="金:1.2 / 土:2.8 / 日:2.5 / 火:0.6 / 水:0.6 / 木:1.0">1.5/日</td>
+          <td class="td-num" style="font-weight:700;color:#2563eb;">7日</td>
+          <td class="td-center"><span class="badge" style="background:#2563eb;color:#fff;">03/31（火）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.6</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.9</span></td>
           <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
         </tr>
         <tr class="data-row" data-name="麹焼きドーナツ　3個入り" data-risk="low" style="background:#f0fdf4;">
@@ -324,7 +330,7 @@
 
   <script>
     // ── フィルタ ───────────────────────────────────────────────
-    let currentRisk = null, currentKeywords = null;
+    let currentRisk = null;
     function applyFilter() {
       const search = document.getElementById('search').value.trim().toLowerCase();
       let visible = 0;
@@ -332,8 +338,7 @@
         const name = row.dataset.name || '';
         const risk = row.dataset.risk || '';
         const ok = (!search || name.includes(search))
-                && (!currentRisk || risk === currentRisk)
-                && (!currentKeywords || currentKeywords.some(k => name.includes(k)));
+                && (!currentRisk || risk === currentRisk);
         row.classList.toggle('hidden', !ok);
         if (ok) visible++;
       });
@@ -344,12 +349,6 @@
       currentRisk = currentRisk === risk ? null : risk;
       ['empty','critical','high','medium','low'].forEach(r =>
         document.getElementById('card-'+r).style.opacity = (!currentRisk||r===currentRisk) ? '1' : '0.4');
-      applyFilter();
-    }
-    function quickFilter(key, kw) {
-      currentKeywords = kw || null;
-      document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('btn-'+key).classList.add('active');
       applyFilter();
     }
     applyFilter();

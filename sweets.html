@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>かめくち 在庫切れ予測</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+            background: #f8fafc; color: #1e293b; min-height: 100vh; padding: 24px; }
+    .header { max-width: 1280px; margin: 0 auto 20px; display:flex; justify-content:space-between; align-items:flex-end;}
+    .header h1 { font-size: 1.5rem; font-weight: 700; }
+    .header p  { font-size: 0.82rem; color: #64748b; margin-top: 4px; }
+    /* 天気ストリップ */
+    .weather-strip { max-width:1280px; margin:0 auto 20px; background:#fff;
+                      border-radius:12px; box-shadow:0 1px 5px rgba(0,0,0,.07);
+                      padding:14px 20px; display:flex; gap:0; overflow-x:auto; }
+    .w-day { flex:1; min-width:76px; text-align:center; padding:0 6px; border-right:1px solid #e2e8f0; }
+    .w-day:last-child { border-right:none; }
+    .w-label { font-size:.74rem; color:#64748b; font-weight:600; }
+    .w-icon  { font-size:1.6rem; margin:4px 0; }
+    .w-pop   { font-size:.74rem; color:#3b82f6; }
+    .w-coeff { font-size:.78rem; font-weight:700; margin-top:2px; }
+    /* サマリーカード */
+    .summary-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
+                     max-width:1280px; margin:0 auto 20px; }
+    .summary-card { background:#fff; border-radius:10px; padding:12px 14px;
+                     box-shadow:0 1px 4px rgba(0,0,0,.07); border-top:3px solid;
+                     cursor:pointer; transition:box-shadow .15s; }
+    .summary-card:hover { box-shadow:0 3px 10px rgba(0,0,0,.13); }
+    .summary-card .num { font-size:1.8rem; font-weight:700; }
+    .summary-card .label { font-size:.75rem; color:#64748b; margin-top:2px; }
+    /* グラフ */
+    .chart-section { max-width:1280px; margin:0 auto 20px; }
+    .chart-tabs { display:flex; gap:8px; margin-bottom:10px; align-items:center;}
+    .chart-tab { padding:5px 14px; border-radius:6px; border:1px solid #cbd5e1;
+                  background:#fff; font-size:.82rem; cursor:pointer; }
+    .chart-tab.active { background:#1e293b; color:#fff; border-color:#1e293b; }
+    .event-info { font-size:.78rem; color:#d97706; margin-left:auto; }
+    .chart-card { background:#fff; border-radius:12px; box-shadow:0 1px 5px rgba(0,0,0,.07);
+                   padding:18px 22px; }
+    .chart-card h2 { font-size:.95rem; font-weight:600; color:#0f172a; margin-bottom:14px; }
+    /* コントロール */
+    .controls { max-width:1280px; margin:0 auto 14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .search-box { flex:1; min-width:200px; padding:8px 14px; border:1px solid #cbd5e1;
+                   border-radius:8px; font-size:.9rem; outline:none; }
+    .search-box:focus { border-color:#6366f1; box-shadow:0 0 0 3px #6366f120; }
+    .quick-btn { padding:6px 14px; border-radius:20px; border:1px solid #cbd5e1;
+                  background:#fff; font-size:.82rem; cursor:pointer; white-space:nowrap; }
+    .quick-btn.active { background:#1e293b; color:#fff; border-color:#1e293b; }
+    .row-count { font-size:.82rem; color:#64748b; white-space:nowrap; margin-left:auto; }
+    /* テーブル */
+    .table-wrap { max-width:1280px; margin:0 auto; background:#fff;
+                   border-radius:12px; box-shadow:0 1px 5px rgba(0,0,0,.07); overflow:hidden; }
+    table { width:100%; border-collapse:collapse; font-size:.87rem; }
+    th { background:#1e293b; color:#e2e8f0; font-weight:600; padding:11px 12px;
+          text-align:center; white-space:nowrap; }
+    th:first-child { text-align:left; }
+    tr.data-row + tr.data-row { border-top:1px solid #e2e8f0; }
+    tr.data-row.hidden { display:none; }
+    .td-name   { padding:10px 12px; font-weight:500; min-width:160px; }
+    .td-num    { padding:10px 12px; text-align:right; font-variant-numeric:tabular-nums; }
+    .td-center { padding:10px 12px; text-align:center; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:5px; font-size:.78rem; font-weight:700; white-space:nowrap; }
+    .risk-badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:.76rem; font-weight:600; white-space:nowrap; }
+    .no-results { padding:28px; text-align:center; color:#94a3b8; display:none; }
+    .note { max-width:1280px; margin:14px auto 0; font-size:.75rem; color:#94a3b8; line-height:1.7; }
+    @media (max-width:700px) {
+      .summary-grid { grid-template-columns:repeat(2,1fr); }
+      body { padding:10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>🍪 かめくち 焼き菓子 在庫管理</h1>
+      <p>2026/03/22（日） &nbsp;|&nbsp; 最終更新: 2026/03/22 13:00 &nbsp;|&nbsp;
+         2026年1月〜の曜日別平均（イベント日4件除外）＋天気補正</p>
+    </div>
+  </div>
+
+  <!-- 天気ストリップ -->
+  <div class="weather-strip">
+    <div style="min-width:48px;display:flex;align-items:center;font-size:.78rem;font-weight:700;color:#64748b;margin-right:8px;">今後<br>7日</div>
+    
+      <div class="w-day">
+        <div class="w-label">今日</div>
+        <div class="w-icon">🌧</div>
+        <div class="w-pop">☂ 70%</div>
+        <div class="w-coeff" style="color:#dc2626;">×0.65</div>
+      </div>
+      <div class="w-day">
+        <div class="w-label">03/24(火)</div>
+        <div class="w-icon">⛅</div>
+        <div class="w-pop">☂ 30%</div>
+        <div class="w-coeff" style="color:#d97706;">×0.90</div>
+      </div>
+      <div class="w-day">
+        <div class="w-label">03/25(水)</div>
+        <div class="w-icon">🌨</div>
+        <div class="w-pop">☂ 30%</div>
+        <div class="w-coeff" style="color:#d97706;">×0.90</div>
+      </div>
+      <div class="w-day">
+        <div class="w-label">03/26(木)</div>
+        <div class="w-icon">🌧</div>
+        <div class="w-pop">☂ 30%</div>
+        <div class="w-coeff" style="color:#d97706;">×0.90</div>
+      </div>
+      <div class="w-day">
+        <div class="w-label">03/27(金)</div>
+        <div class="w-icon">🌤</div>
+        <div class="w-pop">☂ 30%</div>
+        <div class="w-coeff" style="color:#d97706;">×0.90</div>
+      </div>
+      <div class="w-day">
+        <div class="w-label">03/28(土)</div>
+        <div class="w-icon">🌧</div>
+        <div class="w-pop">☂ 30%</div>
+        <div class="w-coeff" style="color:#d97706;">×0.90</div>
+      </div>
+      <div class="w-day">
+        <div class="w-label">03/29(日)</div>
+        <div class="w-icon">🌤</div>
+        <div class="w-pop">☂ 30%</div>
+        <div class="w-coeff" style="color:#d97706;">×0.90</div>
+      </div>
+  </div>
+
+  <!-- サマリーカード -->
+  <div class="summary-grid">
+    <div class="summary-card" style="border-color:#dc2626;" onclick="filterRisk('empty')" id="card-empty">
+      <div class="num" style="color:#dc2626;">0</div><div class="label">🔴 在庫ゼロ</div>
+    </div>
+    <div class="summary-card" style="border-color:#ea580c;" onclick="filterRisk('critical')" id="card-critical">
+      <div class="num" style="color:#ea580c;">0</div><div class="label">🟠 本日中に売切</div>
+    </div>
+    <div class="summary-card" style="border-color:#d97706;" onclick="filterRisk('high')" id="card-high">
+      <div class="num" style="color:#d97706;">1</div><div class="label">🟡 3日以内に売切</div>
+    </div>
+    <div class="summary-card" style="border-color:#2563eb;" onclick="filterRisk('medium')" id="card-medium">
+      <div class="num" style="color:#2563eb;">2</div><div class="label">🔵 1週間以内</div>
+    </div>
+    <div class="summary-card" style="border-color:#16a34a;" onclick="filterRisk('low')" id="card-low">
+      <div class="num" style="color:#16a34a;">8</div><div class="label">🟢 余裕あり</div>
+    </div>
+  </div>
+
+  <!-- 売上推移グラフ -->
+  <div class="chart-section">
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="switchChart('daily',this)">日次</button>
+      <button class="chart-tab" onclick="switchChart('weekly',this)">週次</button>
+      <span class="event-info">⚡ オレンジ棒 = 自動検出したイベント日（4件、平均計算から除外）</span>
+    </div>
+    <div class="chart-card">
+      <h2 id="chart-title">2026年1月〜 日次売上推移（曜日別平均の基礎データ）</h2>
+      <canvas id="trendChart" height="80"></canvas>
+    </div>
+  </div>
+
+  <!-- 絞り込み -->
+  <div class="controls">
+    <input class="search-box" type="text" id="search" placeholder="商品名で検索..." oninput="applyFilter()">
+    <button class="quick-btn active" id="btn-all" onclick="quickFilter('all')">すべて</button>
+    <button class="quick-btn" id="btn-焼き菓子" onclick="quickFilter('焼き菓子',['マドレーヌ','ドーナツ','クッキー','パウンド','フロランタン','スコーン','ガレット','ショコラ','タルト','焼き','チョコ'])">🍪 焼き菓子</button>
+    <button class="quick-btn" id="btn-お酒" onclick="quickFilter('お酒',['敷嶋','鳳凰','みりん','酒','純米','吟醸','gorilla'])">🍶 お酒・みりん</button>
+    <button class="quick-btn" id="btn-食品" onclick="quickFilter('食品',['味噌','醤油','塩','みかん','いわし','ポーク','つみれ','玉ねぎ','乾燥','米'])">🥫 食品</button>
+    <span class="row-count" id="row-count"></span>
+  </div>
+
+  <!-- 予測テーブル -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>商品名</th>
+          <th>現在庫</th>
+          <th>本日販売</th>
+          <th>残見込み</th>
+          <th title="曜日別の平均販売数。セルにカーソルを合わせると曜日別内訳を表示">日平均販売<br><span style="font-size:.7rem;font-weight:400;">(曜日補正)</span></th>
+          <th>残営業日</th>
+          <th>売切予定日</th>
+          <th>今後3日の予測</th>
+          <th>ステータス</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        
+        <tr class="data-row" data-name="升入りフロランタン　2×3個入り" data-risk="high" style="background:#fffbeb;">
+          <td class="td-name">🟡 升入りフロランタン　2×3個入り</td>
+          <td class="td-num">3</td>
+          <td class="td-num" style="color:#6b7280;">2</td>
+          <td class="td-num">1</td>
+          <td class="td-num" title="金:1.5 / 土:4.1 / 日:2.9 / 火:1.0 / 水:0.2 / 木:0.9">1.9/日</td>
+          <td class="td-num" style="font-weight:700;color:#d97706;">2日</td>
+          <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">03/25（水）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.9</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.2</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.8</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
+        </tr>
+        <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="medium" style="background:#eff6ff;">
+          <td class="td-name">🔵 麹フィナンシェ　5個入り</td>
+          <td class="td-num">8</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">8</td>
+          <td class="td-num" title="金:1.2 / 土:2.8 / 日:2.5 / 火:0.6 / 水:0.6 / 木:1.0">1.5/日</td>
+          <td class="td-num" style="font-weight:700;color:#2563eb;">7日</td>
+          <td class="td-center"><span class="badge" style="background:#2563eb;color:#fff;">03/31（火）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.6</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.9</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
+        </tr>
+        <tr class="data-row" data-name="麹マドレーヌ　５個入り" data-risk="medium" style="background:#eff6ff;">
+          <td class="td-name">🔵 麹マドレーヌ　５個入り</td>
+          <td class="td-num">6</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">6</td>
+          <td class="td-num" title="金:0.5 / 土:1.8 / 日:2.4 / 火:0.5 / 水:0.9 / 木:0.4">1.1/日</td>
+          <td class="td-num" style="font-weight:700;color:#2563eb;">7日</td>
+          <td class="td-center"><span class="badge" style="background:#2563eb;color:#fff;">03/31（火）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.5</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.8</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.4</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
+        </tr>
+        <tr class="data-row" data-name="麹焼きドーナツ　3個入り" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 麹焼きドーナツ　3個入り</td>
+          <td class="td-num">9</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">9</td>
+          <td class="td-num" title="金:0.7 / 土:2.9 / 日:2.4 / 火:0.6 / 水:0.9 / 木:0.4">1.4/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">9日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/02（木）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.6</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.8</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.4</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="焼き菓子３種set" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 焼き菓子３種set</td>
+          <td class="td-num">3</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">3</td>
+          <td class="td-num" title="金:0.2 / 土:0.4 / 日:0.0 / 火:0.0 / 水:0.5 / 木:0.7">0.3/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">10日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/03（金）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.0</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.5</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.6</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="敷嶋パウンド　5個入り" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 敷嶋パウンド　5個入り</td>
+          <td class="td-num">11</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">11</td>
+          <td class="td-num" title="金:0.8 / 土:1.8 / 日:1.8 / 火:1.0 / 水:0.6 / 木:0.9">1.2/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">11日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/04（土）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.9</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.8</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="麹サブレ2種・ムラングset" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 麹サブレ2種・ムラングset</td>
+          <td class="td-num">9</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">9</td>
+          <td class="td-num" title="土:1.6 / 日:1.0 / 火:0.5 / 水:0.6 / 木:0.4 / 金:0.4">0.8/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">13日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/07（火）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.5</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.4</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="酒粕抹茶パウンド　５個入り" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 酒粕抹茶パウンド　５個入り</td>
+          <td class="td-num">8</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">8</td>
+          <td class="td-num" title="土:0.8 / 日:0.4 / 火:1.0 / 水:0.1 / 木:0.3 / 金:0.8">0.6/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">15日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/09（木）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.9</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.1</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.3</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="酒粕ほうじ茶パウンド　５個入り" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 酒粕ほうじ茶パウンド　５個入り</td>
+          <td class="td-num">10</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">10</td>
+          <td class="td-num" title="土:1.0 / 日:0.5 / 火:0.5 / 水:0.5 / 木:0.1 / 金:0.6">0.6/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">20日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/15（水）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.5</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.5</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.1</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="酒粕ショコラパウンド　５個入り" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 酒粕ショコラパウンド　５個入り</td>
+          <td class="td-num">12</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">12</td>
+          <td class="td-num" title="土:1.3 / 日:0.5 / 火:0.1 / 水:0.1 / 木:0.9 / 金:0.4">0.6/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">23日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/18（土）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.1</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.1</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.8</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="敷嶋生チョコ　" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 敷嶋生チョコ　</td>
+          <td class="td-num">49</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">49</td>
+          <td class="td-num" title="木:0.8 / 金:0.7 / 土:1.4 / 日:0.6 / 火:0.4 / 水:0.0">0.7/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">60日以上</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">60日以上</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">火⛅0.3</span> <span style="font-size:.75rem;color:#64748b;">水🌨0.0</span> <span style="font-size:.75rem;color:#64748b;">木🌧0.7</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="no-results" id="no-results">該当する商品がありません</div>
+  </div>
+
+  <p class="note">
+    ※ <b>売切予定日</b>は「曜日別平均販売数（2026年1月〜のイベント日除外）× 天気補正係数」でシミュレーション。<br>
+    ※ <b>天気補正</b>: 降水確率≥70%→×0.65 / 50%→×0.75 / 30%→×0.90 / 晴れ→×1.05。<br>
+    ※ <b>イベント日</b>: 同曜日の中央値の2倍を超えた日を自動除外（酒蔵祭など）。<br>
+    ※ 実際の在庫数はスマレジ管理画面でご確認ください。カードや検索で絞り込みできます。
+  </p>
+
+  <script>
+    // ── フィルタ ───────────────────────────────────────────────
+    let currentRisk = null, currentKeywords = null;
+    function applyFilter() {
+      const search = document.getElementById('search').value.trim().toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('tr.data-row').forEach(row => {
+        const name = row.dataset.name || '';
+        const risk = row.dataset.risk || '';
+        const ok = (!search || name.includes(search))
+                && (!currentRisk || risk === currentRisk)
+                && (!currentKeywords || currentKeywords.some(k => name.includes(k)));
+        row.classList.toggle('hidden', !ok);
+        if (ok) visible++;
+      });
+      document.getElementById('row-count').textContent = visible + '件表示';
+      document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+    }
+    function filterRisk(risk) {
+      currentRisk = currentRisk === risk ? null : risk;
+      ['empty','critical','high','medium','low'].forEach(r =>
+        document.getElementById('card-'+r).style.opacity = (!currentRisk||r===currentRisk) ? '1' : '0.4');
+      applyFilter();
+    }
+    function quickFilter(key, kw) {
+      currentKeywords = kw || null;
+      document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-'+key).classList.add('active');
+      applyFilter();
+    }
+    applyFilter();
+
+    // ── Chart.js ───────────────────────────────────────────────
+    const LABELS_D   = ["01-01(木)", "01-02(金)", "01-03(土)", "01-04(日)", "01-06(火)", "01-07(水)", "01-08(木)", "01-09(金)", "01-10(土)", "01-11(日)", "01-13(火)", "01-14(水)", "01-15(木)", "01-16(金)", "01-17(土)", "01-18(日)", "01-20(火)", "01-21(水)", "01-22(木)", "01-23(金)", "01-24(土)", "01-25(日)", "01-27(火)", "01-28(水)", "01-29(木)", "01-30(金)", "01-31(土)", "02-01(日)", "02-03(火)", "02-04(水)", "02-05(木)", "02-06(金)", "02-07(土)", "02-08(日)", "02-10(火)", "02-11(水)", "02-12(木)", "02-13(金)", "02-14(土)", "02-15(日)", "02-17(火)", "02-18(水)", "02-19(木)", "02-20(金)", "02-21(土)", "02-22(日)", "02-24(火)", "02-25(水)", "02-26(木)", "02-27(金)", "02-28(土)", "03-01(日)", "03-03(火)", "03-04(水)", "03-05(木)", "03-06(金)", "03-07(土)", "03-08(日)", "03-10(火)", "03-11(水)", "03-12(木)", "03-13(金)", "03-14(土)", "03-15(日)", "03-17(火)", "03-18(水)", "03-19(木)", "03-20(金)", "03-21(土)"];
+    const SALES_D    = [75145, 77435, 71905, 85375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8316, 47719, 40360, 142333, 51435, 0, 0, 0, 126065, 230436, 128540, 59030, 43948, 48122, 163694, 98610, 98811, 112071, 56899, 75420, 71449, 180691, 86293, 69794, 52753, 46869, 33620, 233242, 134847, 32269, 37869, 111150, 52722, 182384, 190973, 75734, 23424, 46497, 44411, 130386, 91572, 53964, 51250, 51462, 43470, 152800, 158050, 66692, 20524, 99832, 131790, 149665];
+    const IS_EVENT   = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false];
+    const MA7        = [75145, 76290, 74828, 77465, 61972, 51643, 44266, 33531, 22469, 12196, 0, 0, 0, 0, 0, 0, 0, 1188, 8005, 13771, 34104, 41452, 41452, 41452, 40264, 51456, 78610, 76639, 77724, 84003, 90877, 114262, 110340, 91536, 89184, 88879, 93375, 96708, 99136, 97376, 93231, 84757, 83324, 77353, 100466, 93917, 86199, 81638, 89981, 90817, 112069, 106031, 97586, 96322, 97555, 88021, 99116, 86142, 66570, 63072, 67077, 66645, 82129, 86081, 82527, 77750, 84690, 96165, 111336];
+    const LABELS_W   = ["2026-W01", "2026-W02", "2026-W03", "2026-W04", "2026-W05", "2026-W06", "2026-W07", "2026-W08", "2026-W09", "2026-W10", "2026-W11", "2026-W12"];
+    const SALES_W    = [309860, 0, 0, 290163, 485041, 512215, 582823, 571125, 607367, 412024, 510996, 468503];
+
+    const ACCENT   = '#f97316';
+    const bgColors = SALES_D.map((v, i) => IS_EVENT[i] ? '#f9731680' : ACCENT + '30');
+    const brColors = SALES_D.map((v, i) => IS_EVENT[i] ? '#f97316' : ACCENT);
+
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    let chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: LABELS_D,
+        datasets: [
+          { label: '日次売上（円）', data: SALES_D,
+             backgroundColor: bgColors, borderColor: brColors, borderWidth: 1, order: 2 },
+          { label: '7日移動平均', data: MA7, type: 'line',
+             borderColor: '#f97316', borderWidth: 2.5, pointRadius: 0,
+             fill: false, tension: 0.3, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 12 } } },
+          tooltip: { callbacks: {
+            label: c => c.datasetIndex === 0
+              ? ` ${IS_EVENT[c.dataIndex] ? '⚡イベント日 ' : ''}売上: ${c.raw.toLocaleString()}円`
+              : ` 7日平均: ${c.raw.toLocaleString()}円`
+          } }
+        },
+        scales: {
+          x: { ticks: { maxTicksLimit: 22, font: { size: 9 } } },
+          y: { ticks: { callback: v => v>=10000?(v/10000).toFixed(0)+'万':v.toLocaleString(), font:{size:11} } }
+        }
+      }
+    });
+
+    function switchChart(mode, btn) {
+      document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (mode === 'daily') {
+        chart.data.labels = LABELS_D;
+        chart.data.datasets[0].data = SALES_D;
+        chart.data.datasets[0].label = '日次売上（円）';
+        chart.data.datasets[0].backgroundColor = bgColors;
+        chart.data.datasets[0].borderColor = brColors;
+        chart.data.datasets[1].borderColor = '#f97316';
+        chart.data.datasets[1].data = MA7;
+        chart.data.datasets[1].hidden = false;
+        document.getElementById('chart-title').textContent = '2026年1月〜 日次売上推移（オレンジ = イベント日）';
+      } else {
+        chart.data.labels = LABELS_W;
+        chart.data.datasets[0].data = SALES_W;
+        chart.data.datasets[0].label = '週次売上（円）';
+        chart.data.datasets[0].backgroundColor = '#6366f130';
+        chart.data.datasets[0].borderColor = '#6366f1';
+        chart.data.datasets[1].data = Array(LABELS_W.length).fill(null);
+        chart.data.datasets[1].hidden = true;
+        document.getElementById('chart-title').textContent = '2026年1月〜 週次売上推移';
+      }
+      chart.update();
+    }
+  </script>
+</body>
+</html>

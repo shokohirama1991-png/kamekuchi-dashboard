@@ -95,7 +95,7 @@
   <div class="header">
     <div>
       <h1>🍪 かめくち 焼き菓子 在庫管理</h1>
-      <p>2026/03/26（木） &nbsp;|&nbsp; 最終更新: 2026/03/26 16:38 &nbsp;|&nbsp;
+      <p>2026/03/26（木） &nbsp;|&nbsp; 最終更新: 2026/03/26 16:45 &nbsp;|&nbsp;
          2026年1月〜の曜日別平均（イベント日4件除外）＋天気補正</p>
     </div>
   </div>
@@ -147,31 +147,20 @@
       <div class="num" style="color:#dc2626;">0</div><div class="label">🔴 在庫ゼロ</div>
     </div>
     <div class="summary-card" style="border-color:#ea580c;" onclick="filterRisk('critical')" id="card-critical">
-      <div class="num" style="color:#ea580c;">0</div><div class="label">🟠 本日中に売切</div>
+      <div class="num" style="color:#ea580c;">1</div><div class="label">🟠 本日中に売切</div>
     </div>
     <div class="summary-card" style="border-color:#d97706;" onclick="filterRisk('high')" id="card-high">
       <div class="num" style="color:#d97706;">2</div><div class="label">🟡 3日以内に売切</div>
     </div>
     <div class="summary-card" style="border-color:#2563eb;" onclick="filterRisk('medium')" id="card-medium">
-      <div class="num" style="color:#2563eb;">2</div><div class="label">🔵 1週間以内</div>
+      <div class="num" style="color:#2563eb;">1</div><div class="label">🔵 1週間以内</div>
     </div>
     <div class="summary-card" style="border-color:#16a34a;" onclick="filterRisk('low')" id="card-low">
       <div class="num" style="color:#16a34a;">7</div><div class="label">🟢 余裕あり</div>
     </div>
   </div>
 
-  <!-- 売上推移グラフ -->
-  <div class="chart-section">
-    <div class="chart-tabs">
-      <button class="chart-tab active" onclick="switchChart('daily',this)">日次</button>
-      <button class="chart-tab" onclick="switchChart('weekly',this)">週次</button>
-      <span class="event-info">⚡ オレンジ棒 = 自動検出したイベント日（4件、平均計算から除外）</span>
-    </div>
-    <div class="chart-card">
-      <h2 id="chart-title">2026年1月〜 日次売上推移（曜日別平均の基礎データ）</h2>
-      <canvas id="trendChart" height="80"></canvas>
-    </div>
-  </div>
+  
 
   <!-- ページナビ（全商品ページのみ焼き菓子へのリンクを表示） -->
   
@@ -329,16 +318,16 @@
       </thead>
       <tbody id="table-body">
         
-        <tr class="data-row" data-name="升入りフロランタン　2×3個入り" data-risk="high" style="background:#fffbeb;">
-          <td class="td-name">🟡 升入りフロランタン　2×3個入り</td>
-          <td class="td-num">3</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">3</td>
+        <tr class="data-row" data-name="升入りフロランタン　2×3個入り" data-risk="critical" style="background:#fff7ed;">
+          <td class="td-name">🟠 升入りフロランタン　2×3個入り</td>
+          <td class="td-num">2</td>
+          <td class="td-num" style="color:#6b7280;">1</td>
+          <td class="td-num">1</td>
           <td class="td-num" title="金:1.5 / 土:4.1 / 日:2.8 / 火:0.9 / 水:0.2 / 木:0.9">1.8/日</td>
-          <td class="td-num" style="font-weight:700;color:#d97706;">2日</td>
-          <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">03/28（土）</span></td>
+          <td class="td-num" style="font-weight:700;color:#ea580c;">1日</td>
+          <td class="td-center"><span class="badge" style="background:#ea580c;color:#fff;">03/27（金）</span></td>
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️1.5</span> <span style="font-size:.75rem;color:#64748b;">土⛅4.1</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.8</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#ea580c20;color:#ea580c;border:1px solid #ea580c40;">本日中に売切</span></td>
         </tr>
         <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="high" style="background:#fffbeb;">
           <td class="td-name">🟡 麹フィナンシェ　5個入り</td>
@@ -351,16 +340,16 @@
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️1.2</span> <span style="font-size:.75rem;color:#64748b;">土⛅2.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.2</span></td>
           <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
         </tr>
-        <tr class="data-row" data-name="麹マドレーヌ　５個入り" data-risk="medium" style="background:#eff6ff;">
-          <td class="td-name">🔵 麹マドレーヌ　５個入り</td>
-          <td class="td-num">5</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">5</td>
+        <tr class="data-row" data-name="麹マドレーヌ　５個入り" data-risk="high" style="background:#fffbeb;">
+          <td class="td-name">🟡 麹マドレーヌ　５個入り</td>
+          <td class="td-num">4</td>
+          <td class="td-num" style="color:#6b7280;">1</td>
+          <td class="td-num">3</td>
           <td class="td-num" title="金:0.5 / 土:1.8 / 日:2.1 / 火:0.4 / 水:0.9 / 木:0.4">1.1/日</td>
-          <td class="td-num" style="font-weight:700;color:#2563eb;">5日</td>
-          <td class="td-center"><span class="badge" style="background:#2563eb;color:#fff;">04/01（水）</span></td>
+          <td class="td-num" style="font-weight:700;color:#d97706;">3日</td>
+          <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">03/29（日）</span></td>
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️0.5</span> <span style="font-size:.75rem;color:#64748b;">土⛅1.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.1</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
         </tr>
         <tr class="data-row" data-name="酒粕抹茶パウンド　５個入り" data-risk="medium" style="background:#eff6ff;">
           <td class="td-name">🔵 酒粕抹茶パウンド　５個入り</td>

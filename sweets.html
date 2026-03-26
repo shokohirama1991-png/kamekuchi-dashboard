@@ -21,7 +21,6 @@
     .w-label { font-size:.74rem; color:#64748b; font-weight:600; }
     .w-icon  { font-size:1.6rem; margin:4px 0; }
     .w-pop   { font-size:.74rem; color:#3b82f6; }
-    .w-coeff { font-size:.78rem; font-weight:700; margin-top:2px; }
     /* サマリーカード */
     .summary-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
                      max-width:1280px; margin:0 auto 20px; }
@@ -96,7 +95,7 @@
   <div class="header">
     <div>
       <h1>🍪 かめくち 焼き菓子 在庫管理</h1>
-      <p>2026/03/26（木） &nbsp;|&nbsp; 最終更新: 2026/03/26 16:36 &nbsp;|&nbsp;
+      <p>2026/03/26（木） &nbsp;|&nbsp; 最終更新: 2026/03/26 16:38 &nbsp;|&nbsp;
          2026年1月〜の曜日別平均（イベント日4件除外）＋天気補正</p>
     </div>
   </div>
@@ -109,43 +108,36 @@
         <div class="w-label">今日</div>
         <div class="w-icon">☀️</div>
         <div class="w-pop">☂ 10%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
       <div class="w-day">
         <div class="w-label">03/27(金)</div>
         <div class="w-icon">☀️</div>
         <div class="w-pop">☂ 0%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
       <div class="w-day">
         <div class="w-label">03/28(土)</div>
         <div class="w-icon">⛅</div>
         <div class="w-pop">☂ 30%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
       <div class="w-day">
         <div class="w-label">03/29(日)</div>
         <div class="w-icon">🌤</div>
         <div class="w-pop">☂ 30%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
       <div class="w-day">
         <div class="w-label">03/31(火)</div>
         <div class="w-icon">🌧</div>
         <div class="w-pop">☂ 30%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
       <div class="w-day">
         <div class="w-label">04/01(水)</div>
         <div class="w-icon">☁️</div>
         <div class="w-pop">☂ 30%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
       <div class="w-day">
         <div class="w-label">04/02(木)</div>
         <div class="w-icon">☁️</div>
         <div class="w-pop">☂ 30%</div>
-        <div class="w-coeff" style="color:#16a34a;">×1.00</div>
       </div>
   </div>
 
@@ -184,7 +176,6 @@
   <!-- ページナビ（全商品ページのみ焼き菓子へのリンクを表示） -->
   
 
-  
   
   <div class="ranking-section">
     <h2>📊 販売実績ランキング</h2>
@@ -338,17 +329,6 @@
       </thead>
       <tbody id="table-body">
         
-        <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="high" style="background:#fffbeb;">
-          <td class="td-name">🟡 麹フィナンシェ　5個入り</td>
-          <td class="td-num">3</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">3</td>
-          <td class="td-num" title="金:1.2 / 土:2.8 / 日:2.2 / 火:0.8 / 水:0.8 / 木:1.0">1.5/日</td>
-          <td class="td-num" style="font-weight:700;color:#d97706;">2日</td>
-          <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">03/28（土）</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️1.2</span> <span style="font-size:.75rem;color:#64748b;">土⛅2.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.2</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
-        </tr>
         <tr class="data-row" data-name="升入りフロランタン　2×3個入り" data-risk="high" style="background:#fffbeb;">
           <td class="td-name">🟡 升入りフロランタン　2×3個入り</td>
           <td class="td-num">3</td>
@@ -358,6 +338,17 @@
           <td class="td-num" style="font-weight:700;color:#d97706;">2日</td>
           <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">03/28（土）</span></td>
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️1.5</span> <span style="font-size:.75rem;color:#64748b;">土⛅4.1</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.8</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
+        </tr>
+        <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="high" style="background:#fffbeb;">
+          <td class="td-name">🟡 麹フィナンシェ　5個入り</td>
+          <td class="td-num">3</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">3</td>
+          <td class="td-num" title="金:1.2 / 土:2.8 / 日:2.2 / 火:0.8 / 水:0.8 / 木:1.0">1.5/日</td>
+          <td class="td-num" style="font-weight:700;color:#d97706;">2日</td>
+          <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">03/28（土）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️1.2</span> <span style="font-size:.75rem;color:#64748b;">土⛅2.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.2</span></td>
           <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
         </tr>
         <tr class="data-row" data-name="麹マドレーヌ　５個入り" data-risk="medium" style="background:#eff6ff;">
@@ -382,17 +373,6 @@
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️0.8</span> <span style="font-size:.75rem;color:#64748b;">土⛅0.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤0.4</span></td>
           <td class="td-center"><span class="risk-badge" style="background:#2563eb20;color:#2563eb;border:1px solid #2563eb40;">注意</span></td>
         </tr>
-        <tr class="data-row" data-name="敷嶋パウンド　5個入り" data-risk="low" style="background:#f0fdf4;">
-          <td class="td-name">🟢 敷嶋パウンド　5個入り</td>
-          <td class="td-num">9</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">9</td>
-          <td class="td-num" title="金:0.8 / 土:1.8 / 日:1.6 / 火:1.0 / 水:0.6 / 木:0.9">1.1/日</td>
-          <td class="td-num" style="font-weight:700;color:#16a34a;">8日</td>
-          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/04（土）</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️0.8</span> <span style="font-size:.75rem;color:#64748b;">土⛅1.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤1.6</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
-        </tr>
         <tr class="data-row" data-name="麹焼きドーナツ　3個入り" data-risk="low" style="background:#f0fdf4;">
           <td class="td-name">🟢 麹焼きドーナツ　3個入り</td>
           <td class="td-num">9</td>
@@ -402,6 +382,17 @@
           <td class="td-num" style="font-weight:700;color:#16a34a;">8日</td>
           <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/04（土）</span></td>
           <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️0.7</span> <span style="font-size:.75rem;color:#64748b;">土⛅2.9</span> <span style="font-size:.75rem;color:#64748b;">日🌤2.1</span></td>
+          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
+        </tr>
+        <tr class="data-row" data-name="敷嶋パウンド　5個入り" data-risk="low" style="background:#f0fdf4;">
+          <td class="td-name">🟢 敷嶋パウンド　5個入り</td>
+          <td class="td-num">9</td>
+          <td class="td-num" style="color:#6b7280;">0</td>
+          <td class="td-num">9</td>
+          <td class="td-num" title="金:0.8 / 土:1.8 / 日:1.6 / 火:1.0 / 水:0.6 / 木:0.9">1.1/日</td>
+          <td class="td-num" style="font-weight:700;color:#16a34a;">8日</td>
+          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">04/04（土）</span></td>
+          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">金☀️0.8</span> <span style="font-size:.75rem;color:#64748b;">土⛅1.8</span> <span style="font-size:.75rem;color:#64748b;">日🌤1.6</span></td>
           <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
         </tr>
         <tr class="data-row" data-name="麹サブレ2種・ムラングset" data-risk="low" style="background:#f0fdf4;">

@@ -95,7 +95,7 @@
   <div class="header">
     <div>
       <h1>🍪 かめくち 焼き菓子 在庫管理</h1>
-      <p>2026/07/07（火） &nbsp;|&nbsp; 最終更新: 2026/07/07 08:50 &nbsp;|&nbsp;
+      <p>2026/07/07（火） &nbsp;|&nbsp; 最終更新: 2026/07/07 17:30 &nbsp;|&nbsp;
          2026年1月〜の曜日別平均（イベント日12件除外）＋天気補正</p>
     </div>
   </div>
@@ -106,33 +106,33 @@
     
       <div class="w-day">
         <div class="w-label">今日</div>
-        <div class="w-icon">☀️</div>
-        <div class="w-pop">☂ 20%</div>
+        <div class="w-icon">❓</div>
+        <div class="w-pop">☂ ?%</div>
       </div>
       <div class="w-day">
         <div class="w-label">07/08(水)</div>
-        <div class="w-icon">☀️</div>
-        <div class="w-pop">☂ 10%</div>
+        <div class="w-icon">❓</div>
+        <div class="w-pop">☂ ?%</div>
       </div>
       <div class="w-day">
         <div class="w-label">07/09(木)</div>
-        <div class="w-icon">🌤</div>
-        <div class="w-pop">☂ 30%</div>
+        <div class="w-icon">❓</div>
+        <div class="w-pop">☂ ?%</div>
       </div>
       <div class="w-day">
         <div class="w-label">07/10(金)</div>
-        <div class="w-icon">🌤</div>
-        <div class="w-pop">☂ 30%</div>
+        <div class="w-icon">❓</div>
+        <div class="w-pop">☂ ?%</div>
       </div>
       <div class="w-day">
         <div class="w-label">07/11(土)</div>
-        <div class="w-icon">🌤</div>
-        <div class="w-pop">☂ 30%</div>
+        <div class="w-icon">❓</div>
+        <div class="w-pop">☂ ?%</div>
       </div>
       <div class="w-day">
         <div class="w-label">07/12(日)</div>
-        <div class="w-icon">☁️</div>
-        <div class="w-pop">☂ 30%</div>
+        <div class="w-icon">❓</div>
+        <div class="w-pop">☂ ?%</div>
       </div>
       <div class="w-day">
         <div class="w-label">07/14(火)</div>
@@ -144,19 +144,19 @@
   <!-- サマリーカード -->
   <div class="summary-grid">
     <div class="summary-card" style="border-color:#dc2626;" onclick="filterRisk('empty')" id="card-empty">
-      <div class="num" style="color:#dc2626;">8</div><div class="label">🔴 在庫ゼロ</div>
+      <div class="num" style="color:#dc2626;">0</div><div class="label">🔴 在庫ゼロ</div>
     </div>
     <div class="summary-card" style="border-color:#ea580c;" onclick="filterRisk('critical')" id="card-critical">
       <div class="num" style="color:#ea580c;">0</div><div class="label">🟠 本日中に売切</div>
     </div>
     <div class="summary-card" style="border-color:#d97706;" onclick="filterRisk('high')" id="card-high">
-      <div class="num" style="color:#d97706;">1</div><div class="label">🟡 3日以内に売切</div>
+      <div class="num" style="color:#d97706;">0</div><div class="label">🟡 3日以内に売切</div>
     </div>
     <div class="summary-card" style="border-color:#2563eb;" onclick="filterRisk('medium')" id="card-medium">
       <div class="num" style="color:#2563eb;">0</div><div class="label">🔵 1週間以内</div>
     </div>
     <div class="summary-card" style="border-color:#16a34a;" onclick="filterRisk('low')" id="card-low">
-      <div class="num" style="color:#16a34a;">2</div><div class="label">🟢 余裕あり</div>
+      <div class="num" style="color:#16a34a;">0</div><div class="label">🟢 余裕あり</div>
     </div>
   </div>
 
@@ -308,127 +308,6 @@
       </thead>
       <tbody id="table-body">
         
-        <tr class="data-row" data-name="酒粕ショコラパウンド　５個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 酒粕ショコラパウンド　５個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="土:0.9 / 日:0.3 / 火:0.6 / 水:0.7 / 木:0.4 / 金:0.3">0.5/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.7</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.4</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.3</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="敷嶋パウンド　5個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 敷嶋パウンド　5個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="金:0.9 / 土:1.7 / 日:1.0 / 火:0.6 / 水:0.3 / 木:0.6">0.8/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.3</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.6</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.9</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="酒粕抹茶パウンド　５個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 酒粕抹茶パウンド　５個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="金:0.5 / 土:1.0 / 日:0.4 / 火:0.6 / 水:0.6 / 木:0.1">0.5/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.1</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.5</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="麹マドレーヌ　５個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 麹マドレーヌ　５個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="金:0.5 / 土:1.5 / 日:1.1 / 火:0.6 / 水:0.8 / 木:0.2">0.8/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.8</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.2</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.5</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="酒粕ほうじ茶パウンド　５個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 酒粕ほうじ茶パウンド　５個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="土:1.8 / 日:0.3 / 火:0.1 / 水:0.7 / 木:0.1 / 金:0.3">0.6/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.7</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.1</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.3</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="升入りフロランタン　2×3個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 升入りフロランタン　2×3個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="金:1.5 / 土:3.6 / 日:1.7 / 火:0.5 / 水:1.1 / 木:0.8">1.6/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️1.1</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.8</span> <span style="font-size:.75rem;color:#64748b;">金🌤1.5</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="麹フィナンシェ　5個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 麹フィナンシェ　5個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="金:0.8 / 土:1.9 / 日:1.5 / 火:0.4 / 水:0.3 / 木:0.6">0.9/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.3</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.6</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.8</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="麹焼きドーナツ　3個入り" data-risk="empty" style="background:#fef2f2;">
-          <td class="td-name">🔴 麹焼きドーナツ　3個入り</td>
-          <td class="td-num">0</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">0</td>
-          <td class="td-num" title="金:0.6 / 土:1.6 / 日:1.0 / 火:0.2 / 水:0.6 / 木:0.2">0.7/日</td>
-          <td class="td-num" style="font-weight:700;color:#dc2626;">0日</td>
-          <td class="td-center"><span class="badge" style="background:#dc2626;color:#fff;">在庫ゼロ</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.6</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.2</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.6</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;">在庫ゼロ</span></td>
-        </tr>
-        <tr class="data-row" data-name="麹サブレ2種・ムラングset" data-risk="high" style="background:#fffbeb;">
-          <td class="td-name">🟡 麹サブレ2種・ムラングset</td>
-          <td class="td-num">1</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">1</td>
-          <td class="td-num" title="土:1.2 / 日:0.6 / 火:0.3 / 水:0.3 / 木:0.3 / 金:0.6">0.6/日</td>
-          <td class="td-num" style="font-weight:700;color:#d97706;">3日</td>
-          <td class="td-center"><span class="badge" style="background:#d97706;color:#fff;">07/10（金）</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.3</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.3</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.6</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#d9770620;color:#d97706;border:1px solid #d9770640;">要注意</span></td>
-        </tr>
-        <tr class="data-row" data-name="焼き菓子３種set" data-risk="low" style="background:#f0fdf4;">
-          <td class="td-name">🟢 焼き菓子３種set</td>
-          <td class="td-num">3</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">3</td>
-          <td class="td-num" title="金:0.4 / 土:0.9 / 日:0.0 / 火:0.1 / 水:0.1 / 木:0.1">0.3/日</td>
-          <td class="td-num" style="font-weight:700;color:#16a34a;">10日</td>
-          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">07/18（土）</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.1</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.1</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.4</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
-        </tr>
-        <tr class="data-row" data-name="敷嶋生チョコ　" data-risk="low" style="background:#f0fdf4;">
-          <td class="td-name">🟢 敷嶋生チョコ　</td>
-          <td class="td-num">17</td>
-          <td class="td-num" style="color:#6b7280;">0</td>
-          <td class="td-num">17</td>
-          <td class="td-num" title="木:0.4 / 金:0.7 / 土:1.2 / 日:0.5 / 火:0.4 / 水:0.1">0.6/日</td>
-          <td class="td-num" style="font-weight:700;color:#16a34a;">32日</td>
-          <td class="td-center"><span class="badge" style="background:#16a34a;color:#fff;">08/13（木）</span></td>
-          <td class="td-center" style="font-size:.82rem;color:#475569;"><span style="font-size:.75rem;color:#64748b;">水☀️0.1</span> <span style="font-size:.75rem;color:#64748b;">木🌤0.4</span> <span style="font-size:.75rem;color:#64748b;">金🌤0.7</span></td>
-          <td class="td-center"><span class="risk-badge" style="background:#16a34a20;color:#16a34a;border:1px solid #16a34a40;">余裕あり</span></td>
-        </tr>
       </tbody>
     </table>
     <div class="no-results" id="no-results">該当する商品がありません</div>
